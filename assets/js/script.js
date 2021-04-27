@@ -1,5 +1,6 @@
 // delegation event listener for board
 var answerSubmit = document.getElementById('boardContainer');
+var dailyDoubleArray = [];
 
 //Function that gives user the option to reload their last session. The internal code at this point is arbitrary, but I wanted something there for testing the functionality.
 function continueLastGame() {
@@ -62,9 +63,9 @@ function constrainGame(object) {
 	let keys = Object.keys(object);
 	let subKeys = Object.keys(object[keys[0]]);
 	let botKeys = Object.keys(object[keys[subKeys[0]]]);
-	console.log(keys)
-	console.log(subKeys)
-	console.log(botKeys)
+	console.log(keys);
+	console.log(subKeys);
+	console.log(botKeys);
 	for (let i = 0; i < keys.length; i++) {
 		for (let j = 0; j < object[keys[i]].length; j++) {
 			delete object[keys[i]][j].id;
@@ -76,18 +77,16 @@ function constrainGame(object) {
 			delete object[keys[i]][j].invalid_count;
 			delete object[keys[i]][j].updated_at;
 			if (object[keys[i]][j].value == 1000 || 800 || 600) {
-				object[keys[i]][j].value = (object[keys[i]][j].value)/2;
+				object[keys[i]][j].value = object[keys[i]][j].value / 2;
 			}
 			if (object[keys[i]][j].value == 1000 || 800 || 600) {
-				object[keys[i]][j].value = (object[keys[i]][j].value)/2;
+				object[keys[i]][j].value = object[keys[i]][j].value / 2;
 			}
-		}		
+		}
 	}
 
-	console.log(object)
+	console.log(object);
 }
-
-
 
 //************************************************************ Functions to get JService DATA ********* */
 
@@ -102,10 +101,11 @@ async function playGame() {
 	var questionsPull = data;
 	var questionsObject = await organizeData(questionsPull);
 	console.log('questionsObject :>> ', questionsObject);
-	
+
 	saveSession(questionsObject);
 	// createCategories(Object.getOwnPropertyNames(questionsObject));
 	createCategories(questionsObject);
+	makeDailyDouble(dailyDoubleArray);
 }
 
 async function organizeData(data) {
@@ -179,16 +179,21 @@ function createCategories(categoryArray) {
 		);
 		boardContainer.append(catContainer);
 	}
-	$('button').on('click', function(event){
+	$('button').on('click', function (event) {
 		console.log(event.target.id);
 		let answerSelector = $(this).attr('data-id');
-		let correctSelector = $(this).parent().siblings('.modal-header').children('.modal-title').attr('data-answer');
+		let correctSelector = $(this)
+			.parent()
+			.siblings('.modal-header')
+			.children('.modal-title')
+			.attr('data-answer');
 		let userSubmission = $(`#floatingInput_${answerSelector}`).val();
 		let answerPackage = [];
 		answerPackage.push(correctSelector);
 		answerPackage.push(userSubmission);
-		checkAnswer(answerPackage)
-	})
+		checkAnswer(answerPackage);
+	});
+	console.log('dailyDoubleArray :>> ', dailyDoubleArray);
 }
 
 function checkAnswer(answerPackage) {
@@ -275,10 +280,7 @@ function createQuestions(
 		createModal(catAContainer, questId, amount, question, answer);
 		container.append(catAContainer);
 	}
-
 }
-
-
 
 //function to create the modal (popup) inside each questionBox
 function createModal(container, id, amount, question, answer) {
@@ -370,8 +372,6 @@ function createModal(container, id, amount, question, answer) {
 	modalDialog.append(modalContent);
 	modalFade.append(modalDialog);
 	container.append(modalFade);
-	
-	
 }
 
 //function to handle the submit event (pressing 'enter' after input)
@@ -386,8 +386,8 @@ function handleButtonClick(event) {
 	event.preventDefault();
 	if (event.target.id === 'submit') {
 		var answerValue =
-			event.target.parentNode.parentNode.childNodes[1].childNodes[0]
-				.childNodes[0].childNodes[0].value;
+			event.target.parentNode.parentNode.childNodes[1].childNodes[0].childNodes[0]
+				.childNodes[0].value;
 		//currently just console logging answer until we can do something
 		// console.log(answerValue);
 		removeCatSquare(event.target);
@@ -505,6 +505,7 @@ function getBoxValues(category, num) {
 			}
 		}
 	}
+	dailyDoubleArray.push(box);
 	return box;
 }
 
@@ -572,6 +573,19 @@ function getQvalues(
 			return box5Values.answer;
 		}
 	}
+}
+
+function makeDailyDouble(array) {
+	//the array passed will be an array of all 30 box items
+	//this version of daily double just doubles the question value, we can add
+	//more to this including a new input modal if we want to make it a "true" daily double
+	//this also needs a way to find the modal that corresponds to this question to fill in the
+	//HTML text to let the user know they've selected the daily double
+	var min = Math.ceil(0);
+	var max = Math.floor(array.length - 1);
+	var dailyDoubleNumber = Math.floor(Math.random() * (max - min + 1) + min);
+	console.log('dailyDoubleNumber :>> ', dailyDoubleNumber);
+	array[dailyDoubleNumber].value *= 2;
 }
 
 //event Listeners
