@@ -47,7 +47,7 @@ function checkLocalStorage() {
 	if (localStorage.getItem('currentSession')) {
 		continueLastGame();
 	} else {
-		var currentTime = setInterval(timeBox, 1000);
+		// var currentTime = setInterval(timeBox, 1000);
 		audioSound('startGame');
 		playGame();
 	}
@@ -78,9 +78,8 @@ async function playGame() {
 			duplicatesArray.includes(Object.keys(potentialNewCategory)[0])
 		) {
 		} else {
-			questionsObject[Object.keys(potentialNewCategory)[0]] = Object.values(
-				potentialNewCategory
-			)[0];
+			questionsObject[Object.keys(potentialNewCategory)[0]] =
+				Object.values(potentialNewCategory)[0];
 			duplicatesArray.push(Object.keys(potentialNewCategory)[0]);
 		}
 	}
@@ -103,6 +102,7 @@ async function getNewCategory() {
 			.sort((a, b) => a.sort - b.sort)
 			.map((a) => a.value);
 	}
+
 	var newObjectProperty = await organizeData(questionsPull);
 
 	if (newObjectProperty === false) {
@@ -114,13 +114,44 @@ async function getNewCategory() {
 
 async function organizeData(data) {
 	var currentCategoryObject = {};
+	const newKeyArray = [];
 	for (let i = 0; i < 5; i++) {
 		if (!data.clues[i].question || !data.clues[i].answer) {
 			return false;
 		}
 	}
+
 	currentCategoryObject[data.title] = data.clues;
-	return currentCategoryObject;
+	const currentCategory = data.title;
+	// console.log('currentCategory :>> ', currentCategory);
+	for (const key of currentCategoryObject[data.title]) {
+		newKeyArray.push(key);
+	}
+	console.log('newKeyArray :>> ', newKeyArray);
+	function removeDuplicates(originalArray, objKey) {
+		var trimmedArray = [];
+		var values = [];
+		var value;
+
+		for (var i = 0; i < originalArray.length; i++) {
+			value = originalArray[i][objKey];
+
+			if (values.indexOf(value) === -1) {
+				trimmedArray.push(originalArray[i]);
+				values.push(value);
+			}
+		}
+
+		return trimmedArray;
+	}
+
+	const dedupKeyArray = removeDuplicates(newKeyArray, 'question');
+	console.log('dedupKeyArray :>> ', dedupKeyArray);
+	let newCategoryObject = {};
+	newCategoryObject[currentCategory] = { ...dedupKeyArray };
+	// console.log('newCategoryObject :>> ', newCategoryObject);
+	// console.log('currentCategoryObject :>> ', currentCategoryObject);
+	return newCategoryObject;
 }
 
 //function to create/populate the board
