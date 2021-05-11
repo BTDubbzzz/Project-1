@@ -78,9 +78,8 @@ async function playGame() {
 			duplicatesArray.includes(Object.keys(potentialNewCategory)[0])
 		) {
 		} else {
-			questionsObject[Object.keys(potentialNewCategory)[0]] = Object.values(
-				potentialNewCategory
-			)[0];
+			questionsObject[Object.keys(potentialNewCategory)[0]] =
+				Object.values(potentialNewCategory)[0];
 			duplicatesArray.push(Object.keys(potentialNewCategory)[0]);
 		}
 	}
@@ -115,6 +114,7 @@ async function getNewCategory() {
 
 async function organizeData(data) {
 	var currentCategoryObject = {};
+	const newKeyArray = [];
 	for (let i = 0; i < 5; i++) {
 		if (!data.clues[i].question || !data.clues[i].answer) {
 			return false;
@@ -122,75 +122,36 @@ async function organizeData(data) {
 	}
 
 	currentCategoryObject[data.title] = data.clues;
-	// console.log(currentCategoryObject[data.title]);
-	for (var i = 0; i < 5; i++) {
-		if (
-			currentCategoryObject[data.title][0].question ===
-				currentCategoryObject[data.title][i].question &&
-			0 !== i
-		) {
-			// console.log('MATCH 0');
-			// console.log(
-			// 	`${currentCategoryObject[data.title][0].question} (0) vs (${i}) ${
-			// 		currentCategoryObject[data.title][i].question
-			// 	}`
-			// );
-			return false;
-		}
-		if (
-			currentCategoryObject[data.title][1].question ===
-				currentCategoryObject[data.title][i].question &&
-			1 !== i
-		) {
-			// console.log('MATCH 1');
-			// console.log(
-			// 	`${currentCategoryObject[data.title][1].question} (1) vs (${i}) ${
-			// 		currentCategoryObject[data.title][i].question
-			// 	}`
-			// );
-			return false;
-		}
-		if (
-			currentCategoryObject[data.title][2].question ===
-				currentCategoryObject[data.title][i].question &&
-			2 !== i
-		) {
-			// console.log('MATCH 2');
-			// console.log(
-			// 	`${currentCategoryObject[data.title][2].question} (2) vs (${i}) ${
-			// 		currentCategoryObject[data.title][i].question
-			// 	}`
-			// );
-			return false;
-		}
-		if (
-			currentCategoryObject[data.title][3].question ===
-				currentCategoryObject[data.title][i].question &&
-			3 !== i
-		) {
-			// console.log('MATCH 3');
-			// console.log(
-			// 	`${currentCategoryObject[data.title][3].question} (3) vs (${i}) ${
-			// 		currentCategoryObject[data.title][i].question
-			// 	}`
-			// );
-			return false;
-		}
-		if (
-			currentCategoryObject[data.title][4].question ===
-				currentCategoryObject[data.title][i].question &&
-			4 !== i
-		) {
-			// console.log('MATCH 4');
-			// console.log(
-			// 	`${currentCategoryObject[data.title][4].question} (4) vs (${i}) ${
-			// 		currentCategoryObject[data.title][i].question
-			// 	}`
-			// );
-			return false;
-		}
+	const currentCategory = data.title;
+	// console.log('currentCategory :>> ', currentCategory);
+	for (const key of currentCategoryObject[data.title]) {
+		newKeyArray.push(key);
 	}
-	return currentCategoryObject;
+	console.log('newKeyArray :>> ', newKeyArray);
+	function removeDuplicates(originalArray, objKey) {
+		var trimmedArray = [];
+		var values = [];
+		var value;
+
+		for (var i = 0; i < originalArray.length; i++) {
+			value = originalArray[i][objKey];
+
+			if (values.indexOf(value) === -1) {
+				trimmedArray.push(originalArray[i]);
+				values.push(value);
+			}
+		}
+
+		return trimmedArray;
+	}
+
+	const dedupKeyArray = removeDuplicates(newKeyArray, 'question');
+	console.log('dedupKeyArray :>> ', dedupKeyArray);
+	let newCategoryObject = {};
+	newCategoryObject[currentCategory] = { ...dedupKeyArray };
+	// console.log('newCategoryObject :>> ', newCategoryObject);
+	// console.log('currentCategoryObject :>> ', currentCategoryObject);
+	return newCategoryObject;
 }
 
 //function to create/populate the board
