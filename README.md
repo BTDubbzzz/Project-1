@@ -42,7 +42,9 @@ After answering the question, the game will validate whether or not the answer i
 Basic breakdown of roles
 
 Nic Brown - UI/UX/JavaScript/github
+
 Bryan Barnes - JavaScript/github
+
 Blake Wright - JavaScript/github
 
 
