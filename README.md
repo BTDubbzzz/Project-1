@@ -9,7 +9,7 @@ https://btdubbzzz.github.io/jeopardy-game
 The application will be using the following APIs:
 
 - https://jservice.io
-- dictionary (fix this to proper url)
+- dictionary.com part of speech API
 
 ## User Story
 
@@ -22,18 +22,18 @@ responsive format, so I can relax and sharpen my trivia skills.
 ## Features / Screenshots
 
 ---
-Upon loading the page the user is greeted with the option to replay the last board they played. This is possible because of localStorage. [Replay Board Option](replayscreen.jpg)
+Upon loading the page the user is greeted with the option to replay the last board they played. This is possible because of localStorage. [Replay Board Option](./replayscreen.jpg)
 
 
 ---
-After deciding whether or not to populate a new board of questions, the user will see the full jeopardy board. [full jeopardy board](mainboard.jpg)
+After deciding whether or not to populate a new board of questions, the user will see the full jeopardy board. [full jeopardy board](./mainboard.jpg)
 
 
 ---
-When choosing a $ amount under their chosen category and clicking on it, the user will be presented with the jeopardy question[question modal](questionmodal.jpg)
+When choosing a $ amount under their chosen category and clicking on it, the user will be presented with the jeopardy question[question modal](./questionmodal.jpg)
 
 ---
-After answering the question, the game will validate whether or not the answer is correct, and present the user with the corresponding toast [correct answer toast](answertoast)
+After answering the question, the game will validate whether or not the answer is correct, and present the user with the corresponding toast [correct answer toast](./answertoast)
 
 
 
